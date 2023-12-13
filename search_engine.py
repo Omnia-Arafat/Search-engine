@@ -83,51 +83,6 @@ def put_query(q, display=1):
     lis = [[] for _ in range(10)]
     q = preprocessing(q)
     operator = None
-    not_terms = set()
-
-    for term in q:
-        if term == "and" or term == "or" or term == "not":
-            operator = term
-            if operator == "not":
-                continue  # Skip processing "not" as it's handled separately
-        else:
-            if operator is None or operator == "and":
-                for key in pos_index[term][1].keys():
-                    if lis[key - 1] != []:
-                        if lis[key - 1][-1] == pos_index[term][1][key][0] - 1:
-                            lis[key - 1].append(pos_index[term][1][key][0])
-                    else:
-                        lis[key - 1].append(pos_index[term][1][key][0])
-            elif operator == "or":
-                for key in pos_index[term][1].keys():
-                    lis[key - 1].extend(pos_index[term][1][key])
-            elif operator == "not":
-                not_terms.add(term)
-
-            operator = None
-
-    not_list = set(range(1, 11))
-    for term in not_terms:
-        if term in pos_index:
-            not_list -= set(pos_index[term][1].keys())
-
-    for key in not_list:
-        lis[key - 1].extend(range(len(documents[key - 1])))
-
-    positions = []
-    if display == 1:
-        for pos, lst in enumerate(lis, start=1):
-            if len(lst) == len(q):
-                positions.append('document ' + str(pos))
-        return positions
-    else:
-        for pos, lst in enumerate(lis, start=1):
-            if len(lst) == len(q):
-                positions.append('doc' + str(pos))
-        return positions
-    lis = [[] for _ in range(10)]
-    q = preprocessing(q)
-    operator = None
 
     for term in q:
         if term == "and" or term == "or" or term == "not":
@@ -333,5 +288,5 @@ def insert_query(q):
         print(tuple[0], end=" ")
 
 # Example query
-insert_query('antony and calpurnia or not brutus')
+insert_query('antony or brutus')
 
